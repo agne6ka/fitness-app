@@ -1,11 +1,11 @@
 import React from "react";
-import { getMetricMetaInfo } from "./utils/helpers";
 import { StyleSheet, Text, View } from "react-native";
+import AddEntry from "./components/AddEntry";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      {getMetricMetaInfo("bike").getIcon()}
+      <AddEntry />
       <Text>Hello world</Text>
     </View>
   );
