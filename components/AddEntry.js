@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { getMetricMetaInfo, timeToString } from "../utils/helpers";
+import {
+  getMetricMetaInfo,
+  timeToString,
+  getDailyReminderValue,
+} from "../utils/helpers";
 import { View, TouchableOpacity, Text } from "react-native";
 import DateHeader from "./DateHeader";
 import StepSlider from "./StepSlider";
@@ -7,6 +11,8 @@ import Stepper from "./Stepper";
 import { Ionicons } from "@expo/vector-icons";
 import TextButton from "./TextButton";
 import { submitEntry, removeEntry } from "../utils/api";
+import { connect } from "react-redux";
+import { addEntry } from "../actions";
 
 function SubmitBtn({ onPress }) {
   return (
@@ -16,39 +22,39 @@ function SubmitBtn({ onPress }) {
   );
 }
 
-export default class AddEntry extends Component {
+class AddEntry extends Component {
   state = {
     run: 0,
     bike: 0,
     swim: 0,
     sleep: 0,
-    eat: 0
+    eat: 0,
   };
-  increment = metric => {
+  increment = (metric) => {
     const { max, step } = getMetricMetaInfo(metric);
 
-    this.setState(state => {
+    this.setState((state) => {
       const count = state[metric] + step;
 
       return {
         ...state,
-        [metric]: count > max ? max : count
+        [metric]: count > max ? max : count,
       };
     });
   };
-  decrement = metric => {
-    this.setState(state => {
+  decrement = (metric) => {
+    this.setState((state) => {
       const count = state[metric] - getMetricMetaInfo(metric).step;
 
       return {
         ...state,
-        [metric]: count < 0 ? 0 : count
+        [metric]: count < 0 ? 0 : count,
       };
     });
   };
   slide = (metric, value) => {
     this.setState(() => ({
-      [metric]: value
+      [metric]: value,
     }));
   };
   submit = () => {
@@ -56,6 +62,11 @@ export default class AddEntry extends Component {
     const entry = this.state;
 
     // Update Redux
+    this.props.dispatch(
+      addEntry({
+        [key]: entry,
+      })
+    );
 
     this.setState(() => ({ run: 0, bike: 0, swim: 0, sleep: 0, eat: 0 }));
 
@@ -68,7 +79,11 @@ export default class AddEntry extends Component {
   reset = () => {
     const key = timeToString();
 
-    // Update Redux
+    this.props.dispatch(
+      addEntry({
+        [key]: getDailyReminderValue(),
+      })
+    );
 
     // Route to Home
 
@@ -90,7 +105,7 @@ export default class AddEntry extends Component {
     return (
       <View>
         <DateHeader date={new Date().toLocaleDateString()} />
-        {Object.keys(metaInfo).map(key => {
+        {Object.keys(metaInfo).map((key) => {
           const { getIcon, type, ...rest } = metaInfo[key];
           const value = this.state[key];
 
@@ -100,7 +115,7 @@ export default class AddEntry extends Component {
               {type === "slider" ? (
                 <StepSlider
                   value={value}
-                  onChange={value => this.slide(key, value)}
+                  onChange={(value) => this.slide(key, value)}
                   {...rest}
                 />
               ) : (
@@ -119,3 +134,11 @@ export default class AddEntry extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  const key = timeToString();
+
+  return {
+    alreadyLogged: state[key] && typeof state[key].today === "undefined",
+  };
+}
+export default connect(mapStateToProps)(AddEntry);
