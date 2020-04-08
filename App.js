@@ -8,7 +8,7 @@ import reducer from "./reducers";
 export default function App() {
   return (
     <Provider store={createStore(reducer)}>
-      <View>
+      <View style={{ flex: 1 }}>
         <AddEntry />
       </View>
     </Provider>
@@ -17,6 +17,6 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
