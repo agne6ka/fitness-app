@@ -6,8 +6,10 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import AddEntry from "./components/AddEntry";
 import History from "./components/History";
+import EntryDetail from "./components/EntryDetail";
 import reducer from "./reducers";
 import { purple, white } from "./utils/colors";
 import Constants from "expo-constants";
@@ -19,10 +21,22 @@ function RenderStatusBar({ backgroundColor, ...props }) {
     </View>
   );
 }
+
 const Tabs =
   Platform.OS === "ios"
     ? createBottomTabNavigator()
     : createMaterialTopTabNavigator();
+
+const Stack = createStackNavigator();
+
+const HistoryStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="History" component={History} />
+      <Stack.Screen name="EntryDetail" component={EntryDetail} />
+    </Stack.Navigator>
+  );
+};
 
 export default function App() {
   return (
@@ -35,7 +49,7 @@ export default function App() {
             screenOptions={({ route }) => ({
               tabBarIcon: ({ color, size }) => {
                 let icon;
-                if (route.name === "Add Entry") {
+                if (route.name === "AddEntry") {
                   icon = (
                     <FontAwesome name="plus-square" size={size} color={color} />
                   );
@@ -62,8 +76,8 @@ export default function App() {
               },
             }}
           >
-            <Tabs.Screen name="Add Entry" component={AddEntry} />
-            <Tabs.Screen name="History" component={History} />
+            <Tabs.Screen name="AddEntry" component={AddEntry} />
+            <Tabs.Screen name="HistoryStack" component={HistoryStack} />
           </Tabs.Navigator>
         </NavigationContainer>
       </View>
