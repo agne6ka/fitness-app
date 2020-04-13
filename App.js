@@ -31,9 +31,23 @@ const Stack = createStackNavigator();
 
 const HistoryStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: white,
+        },
+      }}
+    >
       <Stack.Screen name="History" component={History} />
-      <Stack.Screen name="EntryDetail" component={EntryDetail} />
+      <Stack.Screen
+        name="EntryDetail"
+        component={EntryDetail}
+        options={({ route }) => {
+          return {
+            title: route.params.entryId,
+          };
+        }}
+      />
     </Stack.Navigator>
   );
 };
