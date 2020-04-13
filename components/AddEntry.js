@@ -20,6 +20,7 @@ import { submitEntry, removeEntry } from "../utils/api";
 import { connect } from "react-redux";
 import { addEntry } from "../actions";
 import { purple, white } from "../utils/colors";
+import { StackActions } from "@react-navigation/native";
 
 function SubmitBtn({ onPress }) {
   return (
@@ -82,7 +83,7 @@ class AddEntry extends Component {
 
     this.setState(() => ({ run: 0, bike: 0, swim: 0, sleep: 0, eat: 0 }));
 
-    // Navigate to home
+    this.toHome(key);
 
     submitEntry({ key, entry });
 
@@ -97,9 +98,10 @@ class AddEntry extends Component {
       })
     );
 
-    // Route to Home
-
     removeEntry(key);
+  };
+  toHome = (key) => {
+    this.props.navigation.navigate("EntryDetail", { entryId: key });
   };
   render() {
     const metaInfo = getMetricMetaInfo();
