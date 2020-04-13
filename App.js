@@ -7,12 +7,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import AddEntry from "./components/AddEntry";
-import History from "./components/History";
-import EntryDetail from "./components/EntryDetail";
 import reducer from "./reducers";
 import { purple, white } from "./utils/colors";
 import Constants from "expo-constants";
+import AddEntry from "./components/AddEntry";
+import History from "./components/History";
+import EntryDetail from "./components/EntryDetail";
+import Live from "./components/Live";
 
 function RenderStatusBar({ backgroundColor, ...props }) {
   return (
@@ -71,6 +72,14 @@ export default function App() {
                   icon = (
                     <Ionicons name="ios-bookmarks" size={size} color={color} />
                   );
+                } else if (route.name === "Live") {
+                  icon = (
+                    <Ionicons
+                      name="ios-speedometer"
+                      size={size}
+                      color={color}
+                    />
+                  );
                 }
                 return icon;
               },
@@ -92,6 +101,7 @@ export default function App() {
           >
             <Tabs.Screen name="AddEntry" component={AddEntry} />
             <Tabs.Screen name="HistoryStack" component={HistoryStack} />
+            <Tabs.Screen name="Live" component={Live} />
           </Tabs.Navigator>
         </NavigationContainer>
       </View>
